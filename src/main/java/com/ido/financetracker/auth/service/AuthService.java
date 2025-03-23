@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class AuthService {
         if (userRepository.existsByEmail(registrationRequest.email())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
-        User user = new User(null, registrationRequest.username(), registrationRequest.password(), registrationRequest.email(), LocalDate.now());
+        User user = new User(registrationRequest.username(), registrationRequest.password(), registrationRequest.email(), LocalDate.now());
         userRepository.save(user);
         String authenticationString = jwtService.generateToken(userDetailsService.loadUserByUsername(registrationRequest.username()));
         return new AuthenticationResponse(authenticationString);
@@ -56,6 +57,7 @@ public class AuthService {
                         loginRequest.password()));
 
         if (authentication.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
             String jwtToken = jwtService.generateToken(userDetails);
             return new AuthenticationResponse(jwtToken);

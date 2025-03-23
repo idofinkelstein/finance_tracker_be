@@ -3,12 +3,9 @@ package com.ido.financetracker.auth.controller;
 import com.ido.financetracker.auth.dto.AuthenticationResponse;
 import com.ido.financetracker.auth.dto.LoginRequest;
 import com.ido.financetracker.auth.dto.RegistrationRequest;
-import com.ido.financetracker.auth.security.JwtService;
 import com.ido.financetracker.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,19 +21,25 @@ public class AuthController {
 
     @GetMapping("/hello")
     public ResponseEntity<String> helloWorld() {
-        return ResponseEntity.ok("Hello, World!");
+        return ResponseEntity.ok("hello, world!");
+    }
+
+    @GetMapping("/welcome")
+    public ResponseEntity<String> welcome() {
+        return ResponseEntity.ok("Welcome Validated User to Finance Tracker API!");
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Validated @RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
         // Implement registration logic here and return appropriate response with status code 201 Created if successful, or 400 Bad Request if validation fails.
 
         AuthenticationResponse response = authService.register(registrationRequest);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
         // Implement login logic here and return appropriate response with status code 200 OK if successful, or 400 Bad Request if validation fails.
 
         AuthenticationResponse response = authService.login(loginRequest);
