@@ -49,7 +49,7 @@ class SecurityConfiguration {
     @Bean
     @Primary
     public UserDetailsService getUserDetailsService() {
-        UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl(userRepository);
+        UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl(userRepository, passwordEncoder());
         userDetailsService.addUser("user", "password", "example@mail.com");
         return userDetailsService;
     }

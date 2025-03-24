@@ -6,6 +6,7 @@ import com.ido.financetracker.auth.dto.RegistrationRequest;
 import com.ido.financetracker.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +27,8 @@ public class AuthController {
 
     @GetMapping("/welcome")
     public ResponseEntity<String> welcome() {
-        return ResponseEntity.ok("Welcome Validated User to Finance Tracker API!");
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok("Welcome, " + auth.getName() + " Validated User to Finance Tracker API!");
     }
 
     @PostMapping("/register")
