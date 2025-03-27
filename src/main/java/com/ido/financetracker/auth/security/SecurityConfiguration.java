@@ -1,7 +1,6 @@
 package com.ido.financetracker.auth.security;
 
 import com.ido.financetracker.auth.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -16,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -28,10 +28,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 class SecurityConfiguration {
 
-    @Autowired
     JwtService jwtService;
-    @Autowired
     UserRepository userRepository;
+
+    public SecurityConfiguration(JwtService jwtService, UserRepository userRepository) {
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+    }
 
 
     @Bean
@@ -45,7 +48,7 @@ class SecurityConfiguration {
     @Bean
     @Primary
     public UserDetailsService getUserDetailsService() {
-        UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl(userRepository, jwtService);
+        UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl(userRepository, jwtService.passwordEncoder());
         userDetailsService.addUser("user", "password", "example@mail.com");
         return userDetailsService;
     }
@@ -87,6 +90,11 @@ class SecurityConfiguration {
                 .authenticationProvider(getAuthenticationProvider())
                 .httpBasic(withDefaults());
         return http.build();
+    }
+
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return jwtService.passwordEncoder();
     }
 
 }

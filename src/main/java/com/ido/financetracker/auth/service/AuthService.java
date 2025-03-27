@@ -22,12 +22,10 @@ import java.time.LocalDate;
 
 @Service
 public class AuthService {
-    // Implement authentication logic here
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-    @Autowired
     private final AuthenticationManager authenticationManager;
 
     public AuthService(UserRepository userRepository, JwtService jwtService, UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
