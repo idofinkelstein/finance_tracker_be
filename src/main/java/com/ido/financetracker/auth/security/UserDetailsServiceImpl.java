@@ -15,11 +15,11 @@ import java.util.Collections;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserDetailsServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserDetailsServiceImpl(UserRepository userRepository, JwtService jwtService) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public void addUser(String username, String password, String email) {
-        User user = new User(username, passwordEncoder.encode(password), email, LocalDate.now());
+        User user = new User(username, jwtService.passwordEncoder().encode(password), email, LocalDate.now());
         if (userRepository.existsByUsername(username) || userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Username or email already exists");
         }

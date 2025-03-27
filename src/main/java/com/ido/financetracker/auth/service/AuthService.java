@@ -46,7 +46,8 @@ public class AuthService {
         if (userRepository.existsByEmail(registrationRequest.email())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
-        User user = new User(registrationRequest.username(), registrationRequest.password(), registrationRequest.email(), LocalDate.now());
+
+        User user = new User(registrationRequest.username(), jwtService.passwordEncoder().encode(registrationRequest.password()), registrationRequest.email(), LocalDate.now());
         userRepository.save(user);
         String authenticationString = jwtService.generateToken(userDetailsService.loadUserByUsername(registrationRequest.username()));
         return new AuthenticationResponse(authenticationString);

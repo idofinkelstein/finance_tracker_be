@@ -16,10 +16,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -37,19 +38,14 @@ class SecurityConfiguration {
     AuthenticationProvider getAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(getUserDetailsService());
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setPasswordEncoder(jwtService.passwordEncoder());
         return authenticationProvider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean
     @Primary
     public UserDetailsService getUserDetailsService() {
-        UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl(userRepository, passwordEncoder());
+        UserDetailsServiceImpl userDetailsService = new UserDetailsServiceImpl(userRepository, jwtService);
         userDetailsService.addUser("user", "password", "example@mail.com");
         return userDetailsService;
     }
@@ -67,6 +63,13 @@ class SecurityConfiguration {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOrigins(List.of("http://localhost:5173")); // Add your frontend URL here
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            config.setAllowedHeaders(List.of("*"));
+            return config;
+        }));
         http.authorizeHttpRequests((requests) ->
                         requests
                                 .requestMatchers(HttpMethod.POST, "/api/auth/login/**").permitAll()
