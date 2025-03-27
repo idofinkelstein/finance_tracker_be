@@ -9,7 +9,6 @@ import org.springframework.lang.NonNullApi;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsernameOrEmail(@NonNull String username, @NonNull String email);
-
     Boolean existsByUsername(@NonNull String username);
     Boolean existsByEmail(@NonNull String email);
 

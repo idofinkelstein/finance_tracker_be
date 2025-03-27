@@ -15,7 +15,6 @@ public class AuthController {
     // Implement endpoints for authentication and authorization
     private final AuthService authService;
 
-
     public AuthController(AuthService service) {
         this.authService = service;
     }
@@ -33,7 +32,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
-        // Implement registration logic here and return appropriate response with status code 201 Created if successful, or 400 Bad Request if validation fails.
 
         AuthenticationResponse response = authService.register(registrationRequest);
 
@@ -42,7 +40,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
-        // Implement login logic here and return appropriate response with status code 200 OK if successful, or 400 Bad Request if validation fails.
 
         AuthenticationResponse response = authService.login(loginRequest);
         return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
