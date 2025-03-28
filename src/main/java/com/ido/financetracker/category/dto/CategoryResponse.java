@@ -1,4 +1,4 @@
-package com.ido.financetracker.category;
+package com.ido.financetracker.category.dto;
 
 
 public record CategoryResponse(

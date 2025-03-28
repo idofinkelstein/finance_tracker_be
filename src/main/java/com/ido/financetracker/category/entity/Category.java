@@ -1,6 +1,6 @@
-package com.ido.financetracker.category;
+package com.ido.financetracker.category.entity;
 
-import com.ido.financetracker.transaction.Transaction;
+import com.ido.financetracker.transaction.entity.Transaction;
 import com.ido.financetracker.auth.entity.User;
 import jakarta.persistence.*;
 

@@ -1,4 +1,4 @@
-package com.ido.financetracker.transaction;
+package com.ido.financetracker.transaction.dto;
 
 public enum TransactionType
 {

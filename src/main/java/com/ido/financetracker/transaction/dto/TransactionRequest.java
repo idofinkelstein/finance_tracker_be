@@ -1,4 +1,4 @@
-package com.ido.financetracker.transaction;
+package com.ido.financetracker.transaction.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
