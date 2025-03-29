@@ -1,10 +1,16 @@
 package com.ido.financetracker.transaction.controller;
 
+import com.ido.financetracker.auth.entity.User;
+import com.ido.financetracker.auth.repository.UserRepository;
+import com.ido.financetracker.category.service.CategoryService;
 import com.ido.financetracker.transaction.dto.TransactionRequest;
 import com.ido.financetracker.transaction.dto.TransactionResponse;
 import com.ido.financetracker.transaction.service.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,16 +26,12 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    // Define your transaction-related endpoints here
-
     @PostMapping
     public ResponseEntity<TransactionResponse> postTransaction(@RequestBody TransactionRequest transactionRequest) {
         // Implement your transaction logic here
-        String username = "default_user"; // Extract user information from the request
-        // Call the transaction service to handle the transaction creation and return the response
-        // Example: TransactionResponse transactionResponse = transactionService.postTransaction(transactionRequest, username);
 
-        TransactionResponse transactionResponse = transactionService.postTransaction(transactionRequest, username);
+
+        TransactionResponse transactionResponse = transactionService.postTransaction(transactionRequest);
 
         return new ResponseEntity<>(transactionResponse, HttpStatus.CREATED);
     }
@@ -38,7 +40,7 @@ public class TransactionController {
     public ResponseEntity<Iterable<TransactionResponse>> getAllTransactions() {
         // Implement your transaction retrieval logic here
         // need to extract user information from the request and return all transactions related to the user
-        List<TransactionResponse> transactions = new ArrayList<>();
+        List<TransactionResponse> transactions = transactionService.getAll();
 
         return ResponseEntity.ok(transactions);
     }

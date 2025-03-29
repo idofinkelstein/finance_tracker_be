@@ -1,6 +1,12 @@
 package com.ido.financetracker.transaction.repository;
 
+import com.ido.financetracker.transaction.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TransactionRepository<Transaction, Long> extends JpaRepository<Transaction, Long> {
+import java.util.ArrayList;
+import java.util.List;
+
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+    ArrayList<Transaction> findAllByUserId(Long userId);
+
 }

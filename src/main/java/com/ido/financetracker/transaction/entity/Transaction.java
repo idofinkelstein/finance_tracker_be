@@ -1,4 +1,5 @@
 package com.ido.financetracker.transaction.entity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ido.financetracker.category.entity.Category;
 import com.ido.financetracker.auth.entity.User;
 import com.ido.financetracker.transaction.dto.TransactionType;
@@ -28,6 +29,7 @@ public class Transaction {
     private User user;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate date;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -44,11 +46,6 @@ public class Transaction {
     private TransactionType transactionType;
 
     public Transaction(User user, LocalDate date, BigDecimal amount, String description, Category category, TransactionType transactionType) {
-        this.user = user;
-        this.date = date;
-        this.amount = amount;
-        this.description = description;
-        this.category = category;
-        this.transactionType = transactionType;
+        this(null, user, date, amount, description, category, transactionType);
     }
 }

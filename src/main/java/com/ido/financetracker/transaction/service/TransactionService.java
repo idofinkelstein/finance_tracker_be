@@ -2,6 +2,7 @@ package com.ido.financetracker.transaction.service;
 
 import com.ido.financetracker.auth.entity.User;
 import com.ido.financetracker.auth.repository.UserRepository;
+import com.ido.financetracker.auth.security.SecurityUtils;
 import com.ido.financetracker.category.entity.Category;
 import com.ido.financetracker.category.dto.CategoryResponse;
 import com.ido.financetracker.category.repository.CategoryRepository;
@@ -9,45 +10,33 @@ import com.ido.financetracker.transaction.dto.TransactionRequest;
 import com.ido.financetracker.transaction.dto.TransactionResponse;
 import com.ido.financetracker.transaction.entity.Transaction;
 import com.ido.financetracker.transaction.repository.TransactionRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
 
-    private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
-
     private final CategoryRepository categoryRepository;
+    private final SecurityUtils securityUtils;
 
-
-    public TransactionService(UserRepository userRepository, TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
+    public TransactionService(TransactionRepository transactionRepository, CategoryRepository categoryRepository, SecurityUtils securityUtils) {
         this.transactionRepository = transactionRepository;
-        this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.securityUtils = securityUtils;
     }
 
+    public TransactionResponse postTransaction(TransactionRequest transactionRequest) {
 
-    public TransactionResponse postTransaction(TransactionRequest transactionRequest, String username) {
+        User user = securityUtils.getUserFromAuthentication();
 
-        // Validate and sanitize the transaction data
+        Category category = categoryRepository.findById(transactionRequest.categoryId()).orElseThrow();
 
-        // Find the user by their username
-        User user = userRepository.findByUsernameOrEmail(username, username);
-
-        // If the user does not exist, throw an exception
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
-
-        Optional<Category> optionalCategory = categoryRepository.findById(transactionRequest.categoryId());
-
-        if(optionalCategory.isEmpty()) {
-            throw new IllegalArgumentException("Category not found");
-        }
-        Category category = optionalCategory.get();
-        // Create a new Transaction entity from the request data
         Transaction createdTransaction = Transaction.builder()
                .user(user)
                .date(transactionRequest.date())
@@ -57,11 +46,9 @@ public class TransactionService {
                .transactionType(transactionRequest.transactionType())
                .build();
 
-        // Save the transaction to the database
-        transactionRepository.save(createdTransaction);
+        createdTransaction = transactionRepository.save(createdTransaction);
 
-        CategoryResponse categoryResponse = new CategoryResponse(category.id(), category.name());
-        // Create a new TransactionResponse object from the saved transaction data
+        CategoryResponse categoryResponse = new CategoryResponse(category.getId(), category.getName());
 
         return new TransactionResponse(
                 createdTransaction.getId(),
@@ -71,6 +58,23 @@ public class TransactionService {
                 categoryResponse,
                 transactionRequest.transactionType()
         );
+    }
+    public List<TransactionResponse> getAll() {
 
+        User user = securityUtils.getUserFromAuthentication();
+        ArrayList<Transaction> transactions = transactionRepository.findAllByUserId(user.getId());
+
+        return transactions.stream().map(transaction -> {
+            CategoryResponse categoryResponse = new CategoryResponse(transaction.getCategory().getId()
+                    , transaction.getCategory().getName());
+            return new TransactionResponse(
+                    transaction.getId(),
+                    transaction.getDate(),
+                    transaction.getAmount(),
+                    transaction.getDescription(),
+                    categoryResponse,
+                    transaction.getTransactionType()
+            );
+        }).toList();
     }
 }
