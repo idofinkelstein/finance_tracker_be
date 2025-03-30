@@ -1,7 +1,7 @@
-package com.ido.financetracker.transaction;
+package com.ido.financetracker.transaction.dto;
 
 
-import com.ido.financetracker.category.CategoryResponse;
+import com.ido.financetracker.category.dto.CategoryResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,6 +12,6 @@ public record TransactionResponse(
         BigDecimal amount,
         String description,
         CategoryResponse category, // Nested Category information
-        String transactionType
+        TransactionType transactionType
 ) {
 }

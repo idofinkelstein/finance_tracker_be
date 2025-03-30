@@ -1,6 +1,6 @@
-package com.ido.financetracker.finance;
+package com.ido.financetracker.finance.dto;
 
-import com.ido.financetracker.category.CategoryResponse;
+import com.ido.financetracker.category.dto.CategoryResponse;
 
 import java.math.BigDecimal;
 

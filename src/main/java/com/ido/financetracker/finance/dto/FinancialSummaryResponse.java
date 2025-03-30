@@ -1,4 +1,4 @@
-package com.ido.financetracker.finance;
+package com.ido.financetracker.finance.dto;
 
 import java.math.BigDecimal;
 
