@@ -1,22 +1,18 @@
 package com.ido.financetracker.transaction.service;
 
 import com.ido.financetracker.auth.entity.User;
-import com.ido.financetracker.auth.repository.UserRepository;
 import com.ido.financetracker.auth.security.SecurityUtils;
-import com.ido.financetracker.category.entity.Category;
 import com.ido.financetracker.category.dto.CategoryResponse;
+import com.ido.financetracker.category.entity.Category;
 import com.ido.financetracker.category.repository.CategoryRepository;
 import com.ido.financetracker.transaction.dto.TransactionRequest;
 import com.ido.financetracker.transaction.dto.TransactionResponse;
 import com.ido.financetracker.transaction.entity.Transaction;
 import com.ido.financetracker.transaction.repository.TransactionRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {

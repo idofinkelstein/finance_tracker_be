@@ -7,23 +7,31 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
-
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    // Implement CRUD operations for Category entity
-    @GetMapping
-    public ResponseEntity<CategoryResponse> getCategory(@RequestBody CategoryRequest categoryRequest) {
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> getCategory(@PathVariable Long id) {
 
-        CategoryResponse categoryResponse = categoryService.getCategory(categoryRequest.name());
+        CategoryResponse categoryResponse = categoryService.getCategory(id);
 
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
+
+        List<CategoryResponse> categoryResponses = categoryService.getAll();
+
+        return new ResponseEntity<>(categoryResponses, HttpStatus.OK);
     }
 
     @PostMapping

@@ -1,6 +1,7 @@
 package com.ido.financetracker;
 
 import com.ido.financetracker.auth.repository.UserRepository;
+import com.ido.financetracker.auth.security.JwtService;
 import com.ido.financetracker.category.entity.Category;
 import com.ido.financetracker.category.repository.CategoryRepository;
 import com.ido.financetracker.transaction.dto.TransactionType;
@@ -20,18 +21,27 @@ public class DataLoader implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final TransactionRepository transactionRepository;
 
-    public DataLoader(UserRepository userRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository) {
+    private final JwtService jwtService;
+
+    public DataLoader(UserRepository userRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository, JwtService jwtService) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.transactionRepository = transactionRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
     public void run(String... args) throws Exception {
         // Load initial data into the database
-        User user = new User("user1", "password", "email@mail.com", LocalDate.now());
+        User user = new User(
+                "user1",
+                jwtService.passwordEncoder().encode("password"),
+                "email@mail.com",
+                LocalDate.now());
         userRepository.save(user);
+
         Category category = categoryRepository.save(Category.builder().user(user).name("food").build());
+
         Transaction transaction = Transaction.builder().user(user).
                 amount(BigDecimal.valueOf(100)).
                 date(LocalDate.now()).
