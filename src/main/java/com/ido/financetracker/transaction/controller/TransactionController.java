@@ -23,7 +23,6 @@ public class TransactionController {
     public ResponseEntity<TransactionResponse> postTransaction(@RequestBody TransactionRequest transactionRequest) {
         // Implement your transaction logic here
 
-
         TransactionResponse transactionResponse = transactionService.postTransaction(transactionRequest);
 
         return new ResponseEntity<>(transactionResponse, HttpStatus.CREATED);
@@ -37,14 +36,18 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionResponse> getTransaction(@PathVariable String id) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    public ResponseEntity<TransactionResponse> getTransaction(@PathVariable Long id) {
+
+        TransactionResponse transactionResponse = transactionService.getTransactionById(id);
+
+        return new ResponseEntity<>(transactionResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable String id) {
-        // Implement your transaction deletion logic here
-        // need to extract user information from the request and delete the transaction with the given ID
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+
+        transactionService.deleteTransaction(id);
+
         return ResponseEntity.noContent().build();
     }
 }

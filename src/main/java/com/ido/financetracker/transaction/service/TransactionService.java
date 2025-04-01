@@ -34,13 +34,13 @@ public class TransactionService {
         Category category = categoryRepository.findById(transactionRequest.categoryId()).orElseThrow();
 
         Transaction createdTransaction = Transaction.builder()
-               .user(user)
-               .date(transactionRequest.date())
-               .amount(transactionRequest.amount())
-               .description(transactionRequest.description())
-               .category(category)
-               .transactionType(transactionRequest.transactionType())
-               .build();
+                .user(user)
+                .date(transactionRequest.date())
+                .amount(transactionRequest.amount())
+                .description(transactionRequest.description())
+                .category(category)
+                .transactionType(transactionRequest.transactionType())
+                .build();
 
         createdTransaction = transactionRepository.save(createdTransaction);
 
@@ -49,12 +49,13 @@ public class TransactionService {
         return new TransactionResponse(
                 createdTransaction.getId(),
                 createdTransaction.getDate(),
-                createdTransaction.getAmount() ,
+                createdTransaction.getAmount(),
                 createdTransaction.getDescription(),
                 categoryResponse,
                 transactionRequest.transactionType()
         );
     }
+
     public List<TransactionResponse> getAll() {
 
         User user = securityUtils.getUserFromAuthentication();
@@ -72,5 +73,26 @@ public class TransactionService {
                     transaction.getTransactionType()
             );
         }).toList();
+    }
+
+    public void deleteTransaction(Long id) {
+        transactionRepository.deleteById(id);
+    }
+
+    public TransactionResponse getTransactionById(Long id) {
+        Transaction transaction = transactionRepository.findById(id).orElseThrow();
+
+        CategoryResponse categoryResponse = new CategoryResponse(
+                transaction.getCategory().getId(),
+                transaction.getCategory().getName());
+
+        return new TransactionResponse(
+                transaction.getId(),
+                transaction.getDate(),
+                transaction.getAmount(),
+                transaction.getDescription(),
+                categoryResponse,
+                transaction.getTransactionType()
+        );
     }
 }
