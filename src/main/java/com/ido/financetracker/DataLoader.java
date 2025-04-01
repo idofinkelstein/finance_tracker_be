@@ -9,18 +9,19 @@ import com.ido.financetracker.transaction.entity.Transaction;
 import com.ido.financetracker.transaction.repository.TransactionRepository;
 import com.ido.financetracker.auth.entity.User;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Component
+@Profile("dev")
 public class DataLoader implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TransactionRepository transactionRepository;
-
     private final JwtService jwtService;
 
     public DataLoader(UserRepository userRepository, CategoryRepository categoryRepository, TransactionRepository transactionRepository, JwtService jwtService) {
