@@ -5,7 +5,9 @@ import com.ido.financetracker.auth.security.SecurityUtils;
 import com.ido.financetracker.category.dto.CategoryRequest;
 import com.ido.financetracker.category.dto.CategoryResponse;
 import com.ido.financetracker.category.entity.Category;
+import com.ido.financetracker.category.error.CategoryApiException;
 import com.ido.financetracker.category.repository.CategoryRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,7 +40,8 @@ public class CategoryService {
 
         User user = securityUtils.getUserFromAuthentication();
 
-        Category category = categoryRepository.findByIdAndUserId(categoryId, user.getId()).orElseThrow();
+        Category category = categoryRepository.findByIdAndUserId(categoryId, user.getId()).
+                orElseThrow(() -> new CategoryApiException(HttpStatus.FORBIDDEN, "Category not found or you don't have access to the resource"));
 
         return  new CategoryResponse(category.getId(), category.getName());
     }

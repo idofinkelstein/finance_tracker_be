@@ -8,7 +8,10 @@ import com.ido.financetracker.category.repository.CategoryRepository;
 import com.ido.financetracker.transaction.dto.TransactionRequest;
 import com.ido.financetracker.transaction.dto.TransactionResponse;
 import com.ido.financetracker.transaction.entity.Transaction;
+import com.ido.financetracker.transaction.error.TransactionApiException;
 import com.ido.financetracker.transaction.repository.TransactionRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -75,12 +78,11 @@ public class TransactionService {
         }).toList();
     }
 
-    public void deleteTransaction(Long id) {
-        transactionRepository.deleteById(id);
-    }
-
-    public TransactionResponse getTransactionById(Long id) {
-        Transaction transaction = transactionRepository.findById(id).orElseThrow();
+    public TransactionResponse getTransaction(Long id) {
+        User user = securityUtils.getUserFromAuthentication();
+        Transaction transaction = transactionRepository
+                .findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new TransactionApiException(HttpStatus.FORBIDDEN,"You are not allowed to access this resource"));
 
         CategoryResponse categoryResponse = new CategoryResponse(
                 transaction.getCategory().getId(),
@@ -94,5 +96,17 @@ public class TransactionService {
                 categoryResponse,
                 transaction.getTransactionType()
         );
+    }
+
+    public ResponseEntity<String> deleteTransaction(Long id) {
+        User user = securityUtils.getUserFromAuthentication();
+
+        int rowsAffected = transactionRepository.deleteByIdAndUserId(id, user.getId());
+
+        if (rowsAffected == 0) {
+            throw new TransactionApiException(HttpStatus.FORBIDDEN, "You are not authorized to delete this transaction or transaction not found");
+        }
+
+        return ResponseEntity.ok("Transaction deleted successfully");
     }
 }

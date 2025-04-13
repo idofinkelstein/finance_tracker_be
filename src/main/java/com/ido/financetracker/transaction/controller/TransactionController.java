@@ -38,16 +38,14 @@ public class TransactionController {
     @GetMapping("/{id}")
     public ResponseEntity<TransactionResponse> getTransaction(@PathVariable Long id) {
 
-        TransactionResponse transactionResponse = transactionService.getTransactionById(id);
+        TransactionResponse transactionResponse = transactionService.getTransaction(id);
 
         return new ResponseEntity<>(transactionResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) {
 
-        transactionService.deleteTransaction(id);
-
-        return ResponseEntity.noContent().build();
+        return transactionService.deleteTransaction(id);
     }
 }
