@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record TransactionRequest(
-        @JsonFormat(pattern = "dd/MM/yyyy")
+//        @JsonFormat(pattern = "dd/MM/yyyy")
         LocalDate date,
         BigDecimal amount,
         String description,

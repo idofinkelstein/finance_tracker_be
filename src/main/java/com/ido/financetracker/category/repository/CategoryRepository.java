@@ -9,9 +9,7 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @NotNull
-    public Optional<Category> findById(@NotNull Long id);
-    @NotNull
-    public Optional<Category> findByNameAndUserId(@NotNull String name, @NotNull Long userId);
+    Optional<Category> findById(@NotNull Long id);
 
     List<Category> findAllByUserId(Long userId);
 
