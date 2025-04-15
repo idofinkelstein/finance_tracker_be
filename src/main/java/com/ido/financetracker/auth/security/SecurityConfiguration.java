@@ -1,6 +1,7 @@
 package com.ido.financetracker.auth.security;
 
 import com.ido.financetracker.auth.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,6 +21,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.List;
 
@@ -31,10 +33,14 @@ class SecurityConfiguration {
 
     JwtService jwtService;
     UserRepository userRepository;
+    @Autowired
+    HandlerExceptionResolver handlerExceptionResolver;
 
-    public SecurityConfiguration(JwtService jwtService, UserRepository userRepository) {
+    @Autowired
+    public SecurityConfiguration(JwtService jwtService, UserRepository userRepository, HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Bean
@@ -61,7 +67,7 @@ class SecurityConfiguration {
 
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtService, getUserDetailsService());
+        return new JwtAuthenticationFilter(jwtService, getUserDetailsService(), handlerExceptionResolver);
     }
 
     @Bean
