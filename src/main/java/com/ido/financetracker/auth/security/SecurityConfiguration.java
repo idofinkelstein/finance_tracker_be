@@ -16,10 +16,10 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.List;
 
@@ -31,15 +31,12 @@ class SecurityConfiguration {
 
     JwtService jwtService;
     UserRepository userRepository;
+    HandlerExceptionResolver handlerExceptionResolver;
 
-    public SecurityConfiguration(JwtService jwtService, UserRepository userRepository) {
+    public SecurityConfiguration(JwtService jwtService, UserRepository userRepository, HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
-    }
-
-    @Bean
-    public AuthenticationEntryPoint jtwAuthenticationEntryPoint() {
-        return new JwtAuthenticationEntryPoint();
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Bean
@@ -61,7 +58,7 @@ class SecurityConfiguration {
 
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtService, getUserDetailsService());
+        return new JwtAuthenticationFilter(jwtService, getUserDetailsService(), handlerExceptionResolver);
     }
 
     @Bean
@@ -85,8 +82,6 @@ class SecurityConfiguration {
                                 .requestMatchers("/h2-console/**").permitAll()
                                 .requestMatchers("/api/auth/hello/**").permitAll()
                                 .anyRequest().authenticated())
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(jtwAuthenticationEntryPoint()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers((headers) ->
                         headers
