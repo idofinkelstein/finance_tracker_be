@@ -3,6 +3,7 @@ package com.ido.financetracker.transaction.controller;
 import com.ido.financetracker.transaction.dto.TransactionRequest;
 import com.ido.financetracker.transaction.dto.TransactionResponse;
 import com.ido.financetracker.transaction.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<TransactionResponse> postTransaction(@RequestBody TransactionRequest transactionRequest) {
+    public ResponseEntity<TransactionResponse> postTransaction(@Valid @RequestBody TransactionRequest transactionRequest) {
         // Implement your transaction logic here
 
         TransactionResponse transactionResponse = transactionService.postTransaction(transactionRequest);
