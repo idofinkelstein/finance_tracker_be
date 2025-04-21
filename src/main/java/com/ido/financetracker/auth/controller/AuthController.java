@@ -4,6 +4,7 @@ import com.ido.financetracker.auth.dto.AuthenticationResponse;
 import com.ido.financetracker.auth.dto.LoginRequest;
 import com.ido.financetracker.auth.dto.RegistrationRequest;
 import com.ido.financetracker.auth.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    // Implement endpoints for authentication and authorization
     private final AuthService authService;
 
     public AuthController(AuthService service) {
@@ -31,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegistrationRequest registrationRequest) {
 
         AuthenticationResponse response = authService.register(registrationRequest);
 
@@ -42,6 +42,7 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
 
         AuthenticationResponse response = authService.login(loginRequest);
-        return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

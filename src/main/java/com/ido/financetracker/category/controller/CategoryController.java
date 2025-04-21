@@ -3,6 +3,7 @@ package com.ido.financetracker.category.controller;
 import com.ido.financetracker.category.dto.CategoryRequest;
 import com.ido.financetracker.category.dto.CategoryResponse;
 import com.ido.financetracker.category.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> postCategory(@RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<CategoryResponse> postCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
 
         CategoryResponse categoryResponse = categoryService.postCategory(categoryRequest);
 

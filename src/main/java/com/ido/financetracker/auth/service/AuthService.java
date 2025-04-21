@@ -56,7 +56,7 @@ public class AuthService {
 
         if (authentication.isAuthenticated()) {
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
+            UserDetails userDetails = (UserDetails)(authentication.getPrincipal());
             String jwtToken = jwtService.generateToken(userDetails);
             return new AuthenticationResponse(jwtToken);
         }
